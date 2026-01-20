@@ -1,0 +1,21 @@
+PS C:\Users\Utku\projects\AgenticWorkflow\starter\phase_1> python .\augmented_prompt_agent.py
+
+--- AugmentedPromptAgent Response ---
+Paris is the capital of France. Dear students, Paris has been the capital of France since the 12th century and is known for its rich history, culture, and iconic landmarks such as the Eiffel Tower and Louvre Museum.
+
+--- Analysis ---
+Knowledge Source:
+  - The LLM's base training data provides foundational knowledge about world capitals
+  - No explicit domain knowledge is constrained in this agent
+  - The model relies on its pre-trained understanding to answer factual queries
+
+Persona Impact:
+  - The persona system prompt forces adoption of 'college professor' identity
+  - This transforms response format: answers begin with 'Dear students,'
+  - The persona instructs the agent to explain reasoning, adding pedagogical depth
+  - Result: Response styled for classroom context rather than bare factual answer
+  - The persona overrides default communication pattern and enforces structured output
+
+Key Difference from DirectPromptAgent:
+  - DirectPromptAgent: Uses only user prompt (no system role) → generic LLM behavior
+  - AugmentedPromptAgent: Injects persona as system message → tailored communication style

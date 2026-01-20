@@ -19,22 +19,23 @@ persona = "You are a college professor; your answers ALWAYS start with: 'Dear st
 augmented_agent = AugmentedPromptAgent(openai_api_key, persona)
 augmented_agent_response = augmented_agent.respond(prompt)
 # Print the agent's response
+print("\n--- AugmentedPromptAgent Response ---")
 print(augmented_agent_response)
 
 # KNOWLEDGE SOURCE & PERSONA IMPACT ANALYSIS:
-# ============================================
-# Knowledge Source:
-#   - The LLM's base training data provides the foundational knowledge about world capitals
-#   - No explicit domain knowledge is constrained or augmented in this agent (unlike KnowledgeAugmentedPromptAgent)
-#   - The model relies on its pre-trained understanding to answer the factual query
-#
-# Persona Impact:
-#   - The persona system prompt forces the agent to adopt a "college professor" identity
-#   - This transforms the response format: answers begin with "Dear students," (mandatory greeting)
-#   - The persona also instructs the agent to explain reasoning, adding pedagogical depth
-#   - Result: A response styled for education/classroom context rather than a bare factual answer
-#   - The persona overrides the agent's default communication pattern and enforces structured output
-#
-# Key Difference from DirectPromptAgent:
-#   - DirectPromptAgent: Uses only user prompt (no system role) → generic LLM behavior
-#   - AugmentedPromptAgent: Injects persona as system message → tailored communication style
+print("\n--- Analysis ---")
+print("Knowledge Source:")
+print("  - The LLM's base training data provides foundational knowledge about world capitals")
+print("  - No explicit domain knowledge is constrained in this agent")
+print("  - The model relies on its pre-trained understanding to answer factual queries")
+print()
+print("Persona Impact:")
+print("  - The persona system prompt forces adoption of 'college professor' identity")
+print("  - This transforms response format: answers begin with 'Dear students,'")
+print("  - The persona instructs the agent to explain reasoning, adding pedagogical depth")
+print("  - Result: Response styled for classroom context rather than bare factual answer")
+print("  - The persona overrides default communication pattern and enforces structured output")
+print()
+print("Key Difference from DirectPromptAgent:")
+print("  - DirectPromptAgent: Uses only user prompt (no system role) → generic LLM behavior")
+print("  - AugmentedPromptAgent: Injects persona as system message → tailored communication style")

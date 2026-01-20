@@ -1,0 +1,18 @@
+C:\Users\Utku\projects\AgenticWorkflow\starter\phase_1>python routing_agent.py
+Initializing Router: Pre-computing agent embeddings...
+[Router] Best agent: texas agent (score=0.386)
+Rome, Texas is a small unincorporated community located in eastern Texas, in the United States. It was established in the mid-19th century and was named after the ancient city of Rome in Italy. The community was originally settled by European immigrants, primarily from Italy and Germany, who were attracted to the area for its fertile land and opportunities for farming.
+
+Rome, Texas has a rich history as an agricultural community, with cotton and corn being the primary crops grown in the area. The community also had a post office, school, and several churches to serve its residents.
+
+Today, Rome, Texas remains a small rural community with a population of around 100 residents. It is known for its historic buildings and rural charm, making it a popular destination for visitors looking to experience a slice of small-town Texas life.
+[Router] Best agent: europe agent (score=0.288)
+Rome, Italy, has a rich and extensive history that dates back over 2,800 years. It was founded in 753 BC and grew to become the capital of the Roman Kingdom, Roman Republic, and later the Roman Empire. Rome was a major center of power, culture, and civilization in the ancient world.
+
+The Roman Empire reached its peak in the 2nd century AD, covering vast territories across Europe, Africa, and Asia. Rome's influence extended far and wide, shaping art, architecture, law, language, and religion in the Western world.
+
+Over time, the Roman Empire faced internal strife, invasions by barbarian tribes, and economic challenges, leading to its eventual decline and fall in 476 AD. After the fall of the Western Roman Empire, Rome went through various periods of turmoil, including invasions, political instability, and the rise of the Papal States.
+
+In the 19th century, Rome became the capital of the newly unified Kingdom of Italy. Today, Rome is a vibrant city known for its historical landmarks, such as the Colosseum, Roman Forum, and Vatican City, as well as its rich cultural heritage and influence on Western civilization.
+[Router] Best agent: math agent (score=0.130)
+If one story takes 2 days to complete, and there are 20 stories in total, then it would take 40 days to complete all 20 stories.
