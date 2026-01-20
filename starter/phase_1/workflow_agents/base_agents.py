@@ -37,7 +37,6 @@ class AugmentedPromptAgent:
     def respond(self, input_text):
         """Generate a response using OpenAI API."""
         client = OpenAI(api_key=self.openai_api_key)
-        print(self.system_prompt)
         response = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[
@@ -274,7 +273,7 @@ class EvaluationAgent:
                     f"Provide instructions to fix an answer based on these reasons why it is incorrect: {evaluation}"
                 )
                 response = client.chat.completions.create(
-                    model="gpt-4",
+                    model="gpt-3.5-turbo",
                     messages = [
                         {"role":"system", "content": f"You are an assistant with the persona: {self.persona}."},
                         {"role":"user", "content": instruction_prompt}
@@ -320,7 +319,7 @@ class RoutingAgent:
             if "description" in agent:
                 self.agent_embeddings[agent["name"]] = self.get_embedding(agent["description"])
 
-    def route_prompts(self, user_input):
+    def route(self, user_input):
         input_emb = self.get_embedding(user_input)
         best_agent = None
         best_score = -1
@@ -354,10 +353,10 @@ class ActionPlanningAgent:
 
     def extract_steps_from_prompt(self, prompt):
         print(f"Extracting steps from prompt: {prompt}")
-        my_new_key = os.getenv("OPENAI_API_KEY")
-        client = OpenAI(api_key=my_new_key)
+        self.openai_api_key
+        client = OpenAI(api_key=self.openai_api_key)
         response = client.chat.completions.create(
-            model="gpt-4o-mini",
+            model="gpt-3.5-turbo",
             messages= [
                 {"role":"system", "content": f"You are an action planning agent. Using your knowledge, you extract from the user prompt the steps requested to complete the action the user is asking for. You return the steps as a list. Only return the steps in your knowledge. Forget any previous context. This is your knowledge: {self.knowledge}"},
                 {"role":"user", "content":prompt}

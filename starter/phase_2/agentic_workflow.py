@@ -4,11 +4,14 @@ import sys
 import os
 from pathlib import Path
 
-# Add the starter directory to Python path for imports
-starter_dir = Path(__file__).parent.parent
-sys.path.insert(0, str(starter_dir))
+# Ensure phase_1 (source of workflow_agents) is on path before phase_2
+phase_1_dir = Path(__file__).parent.parent / "phase_1"
+phase_2_dir = Path(__file__).parent
+sys.path.insert(0, str(phase_1_dir))
+if str(phase_2_dir) not in sys.path:
+    sys.path.append(str(phase_2_dir))
 
-from phase_1.workflow_agents.base_agents import ActionPlanningAgent, KnowledgeAugmentedPromptAgent, EvaluationAgent, RoutingAgent
+from workflow_agents.base_agents import ActionPlanningAgent, KnowledgeAugmentedPromptAgent, EvaluationAgent, RoutingAgent
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -92,16 +95,27 @@ development_engineer_evaluation_agent = EvaluationAgent(openai_api_key, persona_
 
 # Routing Agent
 def product_manager_support_function(query):
-    # We pass the query directly to evaluate, which handles the worker_agent internally
-    result = product_manager_evaluation_agent.evaluate(query)
+    # 1. Get response from knowledge agent
+    knowledge_response = product_manager_knowledge_agent.respond(query)
+    # 2. Pass response to evaluation agent
+    result = product_manager_evaluation_agent.evaluate(knowledge_response)
+    # 3. Return final response
     return result["final_response"]
 
 def program_manager_support_function(query):
-    result = program_manager_evaluation_agent.evaluate(query)
+    # 1. Get response from knowledge agent
+    knowledge_response = program_manager_knowledge_agent.respond(query)
+    # 2. Pass response to evaluation agent
+    result = program_manager_evaluation_agent.evaluate(knowledge_response)
+    # 3. Return final response
     return result["final_response"]
 
 def development_engineer_support_function(query):
-    result = development_engineer_evaluation_agent.evaluate(query)
+    # 1. Get response from knowledge agent
+    knowledge_response = development_engineer_knowledge_agent.respond(query)
+    # 2. Pass response to evaluation agent
+    result = development_engineer_evaluation_agent.evaluate(knowledge_response)
+    # 3. Return final response
     return result["final_response"]
 
 # --- TODO 10: Instantiate Routing Agent ---
@@ -138,19 +152,53 @@ routing_agent = RoutingAgent(openai_api_key, agents_list)
 print("\n*** Workflow execution started ***\n")
 # Workflow Prompt
 # ****
-workflow_prompt = "What would the development tasks for this product be?"
+workflow_prompt = "Define user stories, features, and development tasks for this product."
 # ****
 print(f"Task to complete in this workflow, workflow prompt = {workflow_prompt}")
 
 print("\nDefining workflow steps from the workflow prompt")
+# TODO: 12 - Implement the workflow.
+#   1. Use the 'action_planning_agent' to extract steps from the 'workflow_prompt'.
 workflow_steps = action_planning_agent.extract_steps_from_prompt(workflow_prompt)
+#   2. Initialize an empty list and dictionaries to store results by category.
 completed_steps = []
-
+user_stories = None
+features = None
+tasks = None
+#   3. Loop through the extracted workflow steps:
 for step in workflow_steps:
-    print(f"Executing step: {step}")
-    result = routing_agent.route_prompts(step)
+    #      a. For each step, use the 'routing_agent' to route the step to the appropriate support function.
+    print(f"\nExecuting step: {step}")
+    result = routing_agent.route(step)
+    #      b. Append the result to 'completed_steps'.
     completed_steps.append(result)
+    #      c. Print information about the step being executed and its result.
     print(f"Result: {result}")
+    
+    # Categorize results based on step content
+    step_lower = step.lower()
+    if "user stories" in step_lower or "stories" in step_lower:
+        user_stories = result
+    elif "features" in step_lower:
+        features = result
+    elif "tasks" in step_lower or "development" in step_lower:
+        tasks = result
 
-if completed_steps:
-    print(f"Final Output: {completed_steps[-1]}")
+#   4. After the loop, print the final aggregated output with all three sections.
+print("\n" + "="*60)
+print("FINAL WORKFLOW OUTPUT")
+print("="*60)
+
+if user_stories:
+    print("\n### USER STORIES ###")
+    print(user_stories)
+
+if features:
+    print("\n### FEATURES ###")
+    print(features)
+
+if tasks:
+    print("\n### DEVELOPMENT TASKS ###")
+    print(tasks)
+
+print("\n" + "="*60)
