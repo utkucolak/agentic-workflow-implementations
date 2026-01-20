@@ -17,7 +17,8 @@ europe_agent = KnowledgeAugmentedPromptAgent(openai_api_key, persona, europe_kno
 math_persona = "You are a college math professor"
 math_knowledge = "You know everything about math, you take prompts with numbers, extract math formulas, and show the answer without explanation"
 math_agent = KnowledgeAugmentedPromptAgent(openai_api_key, math_persona, math_knowledge)
-routing_agent = RoutingAgent(openai_api_key, {})
+
+# Define the agents list with name, description, and function
 agents = [
     {
         "name": "texas agent",
@@ -36,7 +37,8 @@ agents = [
     }
 ]
 
-routing_agent.agents = agents
+# Initialize RoutingAgent with agents list so embeddings are pre-computed
+routing_agent = RoutingAgent(openai_api_key, agents)
 
 print(routing_agent.route("Tell me about the history of Rome, Texas"))
 print(routing_agent.route("Tell me about the history of Rome, Italy"))

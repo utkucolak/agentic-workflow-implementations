@@ -294,7 +294,37 @@ class EvaluationAgent:
         return {"final_response": response_from_worker, "evaluation": evaluation, "iteration": i+1}
 
 class RoutingAgent:
+    """Routes user inputs to the most semantically similar agent using embedding-based similarity matching.
+    
+    Purpose:
+        Implements intelligent request routing by embedding both user input and agent descriptions,
+        then selecting the agent with highest cosine similarity. Caches agent embeddings on init
+        to avoid redundant embedding computations.
+    
+    Inputs:
+        openai_api_key (str): API key for OpenAI's embedding model (text-embedding-3-large).
+        agents (list): List of agent dicts with keys:
+            - name (str): Agent identifier/name.
+            - description (str): Semantic description used for embedding matching.
+            - func (callable): Function to execute if agent is selected.
+    
+    Outputs:
+        route(user_input) returns the result of executing the best agent's func() with user_input.
+    
+    Assumptions:
+        - Agent embeddings are computed once at initialization using text-embedding-3-large.
+        - Routing uses cosine similarity on embeddings (normalized dot product).
+        - Returns generic error message if no suitable agent found (similarity scores all invalid).
+        - Assumes all agents have 'description' and 'func' keys in the dict.
+    """
+    
     def __init__(self, openai_api_key, agents):
+        """Initialize router with agents and pre-compute their description embeddings.
+        
+        Args:
+            openai_api_key (str): API key for OpenAI embedding service.
+            agents (list): List of dicts with name, description, and func keys.
+        """
         self.openai_api_key = openai_api_key
         # OPTIMIZATION: Cache embeddings on init so we don't recalculate them every request
         self.agents = agents
@@ -302,6 +332,14 @@ class RoutingAgent:
         self._precompute_embeddings()
 
     def get_embedding(self, text):
+        """Retrieve embedding vector for given text using OpenAI's embedding model.
+        
+        Args:
+            text (str): Text to embed.
+        
+        Returns:
+            list: Embedding vector from text-embedding-3-large model.
+        """
         client = OpenAI(api_key=self.openai_api_key)
         response = client.embeddings.create(
             model="text-embedding-3-large",
@@ -310,12 +348,26 @@ class RoutingAgent:
         return response.data[0].embedding 
 
     def _precompute_embeddings(self):
+        """Pre-compute and cache embeddings for all agent descriptions.
+        
+        Called during initialization to avoid recomputing embeddings on each route() call.
+        Skips agents without a 'description' key.
+        """
         print("Initializing Router: Pre-computing agent embeddings...")
         for agent in self.agents:
             if "description" in agent:
                 self.agent_embeddings[agent["name"]] = self.get_embedding(agent["description"])
 
     def route(self, user_input):
+        """Route user input to the most semantically similar agent.
+        
+        Args:
+            user_input (str): The user's input/query.
+        
+        Returns:
+            str or Any: Result from executing the best agent's func(user_input),
+                        or error message if no suitable agent found.
+        """
         input_emb = self.get_embedding(user_input)
         best_agent = None
         best_score = -1
