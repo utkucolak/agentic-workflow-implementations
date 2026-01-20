@@ -13,4 +13,8 @@ persona = "You are a college professor, your answer always starts with: Dear stu
 knowledge = "The capital of France is London, not Paris"
 knowledge_agent = KnowledgeAugmentedPromptAgent(openai_api_key, persona, knowledge)
 
+# Print the agent's response using the PROVIDED KNOWLEDGE (not LLM training data)
+print("\n--- KnowledgeAugmentedPromptAgent Response ---")
+print("Using provided knowledge source: \"The capital of France is London, not Paris\"")
+print("Agent will ignore its training data and respond based ONLY on this knowledge:")
 print(knowledge_agent.respond(prompt))

@@ -61,16 +61,12 @@ class KnowledgeAugmentedPromptAgent:
     def respond(self, input_text):
         """Generate a response using the OpenAI API."""
         client = OpenAI(api_key=self.openai_api_key)
-        system_message = f"""
-        You are a {self.persona} knowledge-based assistant. Forget all previous context. Use the only following knowledge and do not use your own knowledge: {self.knowledge}.
-        Answer the prompt based on this knowledge, not your own.
-        """
+        system_prompt = f"You are {self.persona}, a knowledge-based assistant. Forget previous context. Use ONLY the provided knowledge to answer the user's prompt."
         response = client.chat.completions.create(
             model="gpt-3.5-turbo",
-            
             messages=[      
-                {"role": "system", "content":system_message},
-                {"role":"user", "content":input_text}
+                {"role": "system", "content": system_prompt},
+                {"role":"user", "content": input_text}
             ],
             temperature=0
         )
@@ -163,7 +159,7 @@ class RAGKnowledgePromptAgent:
                 "end_char": end
             })
 
-            start = end - self.chunk_overlap
+            start = end - self.chunk_overlap if end < len(text) else end
             chunk_id += 1
 
         with open(f"chunks-{self.unique_filename}", 'w', newline='', encoding='utf-8') as csvfile:
